@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  sync:
+    image: resilio/sync:latest
+    ports:
+      - "80:8888"      # web port
+      - "55555:55555"  # sync port
+    volumes:
+      - type: bind
+        source: /home/downloader
+        target: /mnt/sync
+    restart: always
+  jd2:
+    image: jaymoulin/jdownloader:latest
+    ports:
+      - "3129:3129"    # my jdownloader communication port
+    volumes:
+      - type: bind
+        source: /home/downloader/jd2cfg
+        target: /opt/JDownloader/cfg
+      - type: bind
+        source: /home/downloader/folders/jd2dl
+        target: /root/Downloads
+    restart: always
+    depends_on:
+      - sync
